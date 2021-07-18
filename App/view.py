@@ -36,8 +36,15 @@ operación solicitada
 
 def printMenu():
     print("Bienvenido")
-    print("1- Cargar información en el catálogo")
-    print("2- ")
+    print("1- Inicializar el catálogo") 
+    print("2- Cargar información en el catálogo")
+    print("3- Consultar el número de reproducciones en la intersección de dos caracteristicas de contenido en un rango")
+    print("4- Encontrar música para festejar")
+    print("5- Encontrar música para estudiar")
+    print("6- Estudiar los géneros musicales") 
+
+
+
 
 catalog = None
 
