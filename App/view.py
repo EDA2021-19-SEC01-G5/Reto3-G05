@@ -33,6 +33,16 @@ Presenta el menu de opciones y por cada seleccion
 se hace la solicitud al controlador para ejecutar la
 operación solicitada
 """
+# ___________________________________________________
+#  Ruta a los archivos
+# ___________________________________________________
+
+
+event_file = 'context_content_features-30pct.csv'
+
+# ___________________________________________________
+#  Menu principal
+# ___________________________________________________
 
 def printMenu():
     print("Bienvenido")
@@ -43,7 +53,11 @@ def printMenu():
     print("5- Encontrar música para estudiar")
     print("6- Estudiar los géneros musicales") 
 
+def initCatalog():
+    return controller.initCatalog()
 
+def loadData(catalog,event_file):
+    controller.loadData(catalog, event_file)
 
 
 catalog = None
@@ -55,11 +69,15 @@ while True:
     printMenu()
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
-        print("Cargando información de los archivos ....")
+        print("Inicializando el catalogo....")
+        catalog = initCatalog()
+        print("Catalogo inicializado\n")
 
     elif int(inputs[0]) == 2:
-        pass
-
+        print("Cargando información al catalogo")
+        loadData(catalog, event_file)
+        print("Información cargada")
     else:
         sys.exit(0)
 sys.exit(0)
+
