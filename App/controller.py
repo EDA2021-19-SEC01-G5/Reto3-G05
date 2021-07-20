@@ -43,4 +43,8 @@ def loadData(catalog,event_file):
 
 # Funciones de ordenamiento
 
+def requerimiento1(catalog,caracteristica1, min1, max1, caracteristica2, min2, max2):
+    total_eventos, total_artistas, altura_arbol = model.requerimiento1(catalog,caracteristica1, min1, max1, caracteristica2, min2, max2)
+    return total_eventos, total_artistas, altura_arbol
+
 # Funciones de consulta sobre el catálogo

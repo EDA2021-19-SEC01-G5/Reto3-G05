@@ -25,7 +25,8 @@ import sys
 import controller
 from DISClib.ADT import list as lt
 assert cf
-
+from DISClib.ADT import orderedmap as om
+from DISClib.ADT import map as mp
 
 """
 La vista se encarga de la interacción con el usuario
@@ -38,7 +39,7 @@ operación solicitada
 # ___________________________________________________
 
 
-event_file = 'context_content_features-30pct.csv'
+event_file = 'context_content_features-small.csv'
 
 # ___________________________________________________
 #  Menu principal
@@ -58,7 +59,33 @@ def initCatalog():
 
 def loadData(catalog,event_file):
     controller.loadData(catalog, event_file)
+    numero_eventos = lt.size(catalog['events'])
+    numero_artistas = mp.size(catalog['artists'])
+    numero_pistas = mp.size(catalog['tracks'])
+    elementos_iniciales = []
+    elementos_finales = []
+    for i in range(5):
+        inicial = lt.getElement(catalog['events'],i+1)
+        final = lt.getElement(catalog['events'],numero_eventos-i)
+        elementos_iniciales.append(inicial)
+        elementos_finales.append(final)
+    print('\n Total de eventos guardados: ', numero_eventos)
+    print('\n Total de artistas unicos cargados: ', numero_artistas)
+    print('\n Total de pistas de audio unicas guardadas: ', numero_pistas)
+    print('\n 5 primeros elementos cargados: ')
+    for i in range(5):
+        print(elementos_iniciales[i])
+    print('\n 5 elementos finales cargados: ')
+    for i in range(5):
+        print(elementos_finales[i])
 
+
+#Requerimiento 1
+def requerimiento1(catalog,caracteristica1, min1, max1, caracteristica2, min2, max2):
+    total_eventos, total_artistas, altura_arbol = controller.requerimiento1(catalog,caracteristica1, min1, max1, caracteristica2, min2, max2)
+    print('La cantidad de eventos entre el rango espeficicado es de :',total_eventos)
+    print('La cantidad de artistas diferentes es de: ', total_artistas)
+    print('La altura del arbol es de ', altura_arbol)
 
 catalog = None
 
@@ -77,6 +104,15 @@ while True:
         print("Cargando información al catalogo")
         loadData(catalog, event_file)
         print("Información cargada")
+
+    elif int(inputs[0]) == 3:
+        caracteristica1 = input('Ingrese la primera categoria deseada: ')
+        min1 = float(input('ingrese el valor minimo para esta caracteristica: '))
+        max1 = float(input('ingrese el valor maximo para esta caracteristica: '))
+        caracteristica2 = input('Ingrese la segunda categoria deseada: ')
+        min2 = float(input('ingrese el valor minimo para esta caracteristica: '))
+        max2 = float(input('ingrese el valor maximo para esta caracteristica: '))
+        requerimiento1(catalog,caracteristica1, min1, max1, caracteristica2, min2, max2)
     else:
         sys.exit(0)
 sys.exit(0)

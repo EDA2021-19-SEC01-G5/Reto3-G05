@@ -49,9 +49,12 @@ def initCatalog():
         'valence': None,
         'artists': None,
         'tracks':None,
-        'events': None
+        'events': None,
+        "loudness":None,
+        "acousticness":None,
+        "energy": None
     }
-    categories = ['instrumentalness', 'liveness','speechiness', 'danceability', 'valence']
+    categories = ['instrumentalness', 'liveness','speechiness', 'danceability', 'valence','loudness', 'acousticness','energy']
     for category in categories:
         catalog[category] = om.newMap(omaptype='RBT',comparefunction = compare )
     catalog['events'] = lt.newList('ARRAY_LIST', compareIds)
@@ -61,7 +64,7 @@ def initCatalog():
     return catalog
 # Funciones para agregar informacion al catalogo
 def addEvent(catalog, event):
-    categories = ['instrumentalness', 'liveness','speechiness', 'danceability', 'valence']
+    categories = ['instrumentalness', 'liveness','speechiness', 'danceability', 'valence','loudness', 'acousticness','energy']
     lt.addLast(catalog['events'], event)
     for category in categories:
         addToRBT(catalog, event,category)
@@ -94,23 +97,74 @@ def addArtists(catalog, event):
 # Funciones para creacion de datos
 def addToRBT(catalog, event, category):
     map = catalog[category]
+    #se esta volviendo float
     key = float(event[category])
     value = om.get(map,key)
     if (value is None):
-        entry = newEvent()
+        entry = newEvent(category)
         om.put(map,key,entry)
     else:
         entry = me.getValue(value)
     lt.addLast(entry['list'],event)
+    categories = ['instrumentalness', 'liveness','speechiness', 'danceability', 'valence','loudness', 'acousticness','energy']
+    for c in categories:
+        if c != category:
+            valor_c = om.get(entry[c],float(event[c]))
+            if valor_c is None:
+                entry_c = lt.newList('ARRAY_LIST')
+                om.put(entry[c],float(event[c]),entry_c)
+            else:
+                entry_c = me.getValue(valor_c)
+            lt.addLast(entry_c,event)
         
-def newEvent():
+def newEvent(category):
     event = {
         'list': None
     }
     event['list'] = lt.newList('ARRAY_LIST',compareIds )
+    categories = ['instrumentalness', 'liveness','speechiness', 'danceability', 'valence','loudness', 'acousticness','energy']
+    for c in categories:
+        if c != category:
+            event[c] = om.newMap('RBT',compare)
     return event
 
 # Funciones de consulta
+
+
+#requerimiento 1
+
+def requerimiento1(catalog,caracteristica1, min1, max1, caracteristica2, min2, max2):
+    eventos_totales = lt.newList('ARRAY_LIST')
+    events_car1 = om.keys(catalog[caracteristica1],min1, max1)
+    cant_events1 = lt.size(events_car1)
+    for i in range(1, cant_events1+1):
+        key = lt.getElement(events_car1,i)
+        entry = om.get(catalog[caracteristica1],key)
+        elemento = me.getValue(entry)
+        events_car2 = om.keys(elemento[caracteristica2],min2,max2)
+        cant_car2 = lt.size(events_car2)
+        for j in range(1, cant_car2+1):
+            key2 = lt.getElement(events_car2, j)
+            entry2 = om.get(elemento[caracteristica2],key2)
+            elemento2 = me.getValue(entry2)
+            len_lista = lt.size(elemento2)
+            for e in range(1,len_lista+1):
+                evento = lt.getElement(elemento2,e)
+                lt.addLast(eventos_totales,evento)
+    total_eventos = lt.size(eventos_totales)
+    total_artistas = num_artistas(eventos_totales)
+    altura_arbol = om.height(catalog[caracteristica1])
+    return total_eventos, total_artistas, altura_arbol
+
+def num_artistas(lista):
+    artistas = mp.newMap(10000,maptype='PROBING',loadfactor=0.5)
+    longitud = lt.size(lista)
+    for i in range(1,longitud+1):
+        evento = lt.getElement(lista, i)
+        mp.put(artistas, evento['artist_id'],evento)
+    return mp.size(artistas)
+
+
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 def compare(i1, i2):
