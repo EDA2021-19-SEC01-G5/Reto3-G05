@@ -20,6 +20,7 @@
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
 
+from math import pi
 import config as cf
 import model
 import csv
@@ -46,5 +47,11 @@ def loadData(catalog,event_file):
 def requerimiento1(catalog,caracteristica1, min1, max1, caracteristica2, min2, max2):
     total_eventos, total_artistas, altura_arbol = model.requerimiento1(catalog,caracteristica1, min1, max1, caracteristica2, min2, max2)
     return total_eventos, total_artistas, altura_arbol
+
+
+
+def requerimiento2(catalog, min_liv , max_liv, min_spe, max_spe):
+    total_pistas, pistas = model.requerimiento2(catalog, min_liv , max_liv, min_spe, max_spe)
+    return total_pistas, pistas
 
 # Funciones de consulta sobre el catálogo

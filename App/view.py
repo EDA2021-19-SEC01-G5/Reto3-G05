@@ -87,6 +87,20 @@ def requerimiento1(catalog,caracteristica1, min1, max1, caracteristica2, min2, m
     print('La cantidad de artistas diferentes es de: ', total_artistas)
     print('La altura del arbol es de ', altura_arbol)
 
+
+
+
+#requerimiento 2
+def requerimiento2(catalog, min_liv , max_liv, min_spe, max_spe):
+    total_pistas, pistas = controller.requerimiento2(catalog, min_liv , max_liv, min_spe, max_spe)
+    print('El total de pistas en el rango especificado es de: ', total_pistas)
+    print('Informacion de 8 pistas aleatorias: ')
+    for i in range(1,lt.size(pistas)+1):
+        print('pista ',i,': \n', lt.getElement(pistas, i), '\n')
+
+
+
+
 catalog = None
 
 """
@@ -113,6 +127,12 @@ while True:
         min2 = float(input('ingrese el valor minimo para esta caracteristica: '))
         max2 = float(input('ingrese el valor maximo para esta caracteristica: '))
         requerimiento1(catalog,caracteristica1, min1, max1, caracteristica2, min2, max2)
+    elif int(inputs[0]) == 4:
+        min_liv = float(input('Ingrese el valor minimo de liveness: '))
+        max_liv = float(input('Ingrese el valor maximo de liveness: '))
+        min_spe = float(input('Ingrese el valor minimo de speecheless: '))
+        max_spe = float(input('Ingrese el valor mmaximo de speecheless: '))
+        requerimiento2(catalog, min_liv , max_liv, min_spe, max_spe)
     else:
         sys.exit(0)
 sys.exit(0)

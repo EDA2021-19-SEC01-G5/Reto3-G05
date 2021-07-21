@@ -33,6 +33,7 @@ from DISClib.ADT import orderedmap as om
 from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Sorting import shellsort as sa
 assert cf
+import random
 
 """
 Se define la estructura de un catálogo de videos. El catálogo tendrá dos listas, una para los videos, otra para las categorias de
@@ -163,6 +164,52 @@ def num_artistas(lista):
         evento = lt.getElement(lista, i)
         mp.put(artistas, evento['artist_id'],evento)
     return mp.size(artistas)
+
+
+
+# requerimiento 2
+
+    
+def dar_pistas(lista):
+    map_pistas = om.newMap(omaptype='RBT',comparefunction = compare )
+    longitud = lt.size(lista)
+    for i in range(1,longitud+1):
+        evento = lt.getElement(lista, i)
+        om.put(map_pistas, evento["track_id"],evento)
+    return map_pistas
+
+
+def requerimiento2(catalog, min_liv , max_liv, min_spe, max_spe):
+    eventos_totales = lt.newList('ARRAY_LIST')
+    eventos_liv = om.keys(catalog['liveness'],min_liv, max_liv)
+    cantidad_eventos_liv = lt.size(eventos_liv)
+    for i in range(1, cantidad_eventos_liv+1):
+        key = lt.getElement(eventos_liv, i)
+        entry = om.get(catalog['liveness'],key)
+        eventos_spe = me.getValue(entry)
+        events_car2 = om.keys(eventos_spe['speechiness'],min_spe,max_spe)
+        cant_car2 = lt.size(events_car2)
+        for j in range(1, cant_car2+1):
+            key2 = lt.getElement(events_car2, j)
+            entry2 = om.get(eventos_spe['speechiness'], key2)
+            lista_eventos = me.getValue(entry2)
+            cantidad_eventos = lt.size(lista_eventos)
+            for e in range(1, cantidad_eventos+1):
+                evento = lt.getElement(lista_eventos, e)
+                lt.addLast(eventos_totales, evento)           
+    arbol_pistas = dar_pistas(eventos_totales)
+    total_pistas = om.size(arbol_pistas)
+    posiciones = random.sample(range(total_pistas), 8)
+    pistas = lt.newList('ARRAY_LIST')
+    for i in posiciones:
+        key_pista = om.select(arbol_pistas, i)
+        entry3 = om.get(arbol_pistas, key_pista)
+        pista = me.getValue(entry3)
+        lt.addLast(pistas, pista)
+    return total_pistas, pistas
+
+
+
 
 
 
