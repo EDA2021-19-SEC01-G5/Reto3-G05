@@ -58,7 +58,7 @@ def initCatalog():
     return controller.initCatalog()
 
 def loadData(catalog,event_file):
-    controller.loadData(catalog, event_file)
+    data = controller.loadData(catalog, event_file)
     numero_eventos = lt.size(catalog['events'])
     numero_artistas = mp.size(catalog['artists'])
     numero_pistas = mp.size(catalog['tracks'])
@@ -78,30 +78,33 @@ def loadData(catalog,event_file):
     print('\n 5 elementos finales cargados: ')
     for i in range(5):
         print(elementos_finales[i])
-
-
+    print("Tiempo [ms]: ", f"{data[1]:.3f}", "  ||  ",
+            "Memoria [kB]: ", f"{data[2]:.3f}")
 #Requerimiento 1
 def requerimiento1(catalog,caracteristica1, min1, max1, caracteristica2, min2, max2):
-    total_eventos, total_artistas, altura_arbol = controller.requerimiento1(catalog,caracteristica1, min1, max1, caracteristica2, min2, max2)
+    total_eventos, total_artistas, altura_arbol, delta_time, delta_memory = controller.requerimiento1(catalog,caracteristica1, min1, max1, caracteristica2, min2, max2)
     print('La cantidad de eventos entre el rango espeficicado es de :',total_eventos)
     print('La cantidad de artistas diferentes es de: ', total_artistas)
     print('La altura del arbol es de ', altura_arbol)
-
+    print("Tiempo [ms]: ", f"{delta_time}", "  ||  ",
+            "Memoria [kB]: ", f"{delta_memory}")
 
 
 
 #requerimiento 2
 def requerimiento2(catalog, min_liv , max_liv, min_spe, max_spe):
-    total_pistas, pistas = controller.requerimiento2(catalog, min_liv , max_liv, min_spe, max_spe)
+    total_pistas, pistas, delta_time, delta_memory = controller.requerimiento2(catalog, min_liv , max_liv, min_spe, max_spe)
     print('El total de pistas en el rango especificado es de: ', total_pistas)
     print('Informacion de 8 pistas aleatorias: ')
     for i in range(1,lt.size(pistas)+1):
         print('pista ',i,': \n', lt.getElement(pistas, i), '\n')
-
+    print("Tiempo [ms]: ", f"{delta_time}", "  ||  ",
+            "Memoria [kB]: ", f"{delta_memory}")
 
 #requerimiento 3
 def requerimiento3(catalog, min_valence,max_valence, min_tempo,max_tempo):
-    pistas, total_pistas = controller.requerimiento3(catalog, min_valence,max_valence, min_tempo,max_tempo)
+    data, delta_time, delta_memory= controller.requerimiento3(catalog, min_valence,max_valence, min_tempo,max_tempo)
+    pistas, total_pistas = data 
     print('El total de pistas encontradas para los rangos especificados es de:', total_pistas)
     print(8*"*")
     print("Información de las 8 pistas aleatorias: ")
@@ -109,10 +112,12 @@ def requerimiento3(catalog, min_valence,max_valence, min_tempo,max_tempo):
     for i in range(1, lt.size(pistas) + 1):
         print(8*"*")
         print('Pista ', i,':\n', lt.getElement(pistas,i), '\n')
-
+    print("Tiempo [ms]: ", f"{delta_time}", "  ||  ",
+            "Memoria [kB]: ", f"{delta_memory}")
 
 def requerimiento4(catalog,lista_generos,nuevoGenero,nuevo,min,max):
-    data, tabla = controller.requerimiento4(catalog,lista_generos,nuevoGenero,nuevo,min,max)
+    datos, delta_time, delta_memory = controller.requerimiento4(catalog,lista_generos,nuevoGenero,nuevo,min,max)
+    data, tabla = datos
     print(8*"*") 
     print(8*"*") 
     print("Se encontraron un total de:", data["numero_pistas_individual"], "total de eventos de reproducción")
@@ -131,7 +136,8 @@ def requerimiento4(catalog,lista_generos,nuevoGenero,nuevo,min,max):
             for i in range(1,11):
                 elemento = lt.getElement(lista,i)
                 print("Artista", i, elemento["artist_id"])
-
+    print("Tiempo [ms]: ", f"{delta_time}", "  ||  ",
+            "Memoria [kB]: ", f"{delta_memory}")
 
 catalog = None
 
