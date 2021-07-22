@@ -99,7 +99,9 @@ def requerimiento2(catalog, min_liv , max_liv, min_spe, max_spe):
         print('pista ',i,': \n', lt.getElement(pistas, i), '\n')
 
 
-
+#requerimiento 3
+def requerimiento3(catalog, min_valence,max_valence, min_tempo,max_tempo):
+    controller.requerimiento3(catalog, min_valence,max_valence, min_tempo,max_tempo)
 
 catalog = None
 
@@ -133,6 +135,12 @@ while True:
         min_spe = float(input('Ingrese el valor minimo de speecheless: '))
         max_spe = float(input('Ingrese el valor mmaximo de speecheless: '))
         requerimiento2(catalog, min_liv , max_liv, min_spe, max_spe)
+    elif (int(inputs[0])) == 5:
+        min_valence = float(input('Ingrese el valor minimo de valence: '))
+        max_valence= float(input('Ingrese el valor maximo de valence: '))
+        min_tempo = float(input('Ingrese el valor minimo del tempo: '))
+        max_tempo = float(input('Ingrese el valor maximo del tempo: '))
+        requerimiento3(catalog, min_valence,max_valence, min_tempo,max_tempo)
     else:
         sys.exit(0)
 sys.exit(0)

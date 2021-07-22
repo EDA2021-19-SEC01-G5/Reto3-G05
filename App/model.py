@@ -107,6 +107,7 @@ def addToRBT(catalog, event, category):
     else:
         entry = me.getValue(value)
     lt.addLast(entry['list'],event)
+    addToTempoList(entry,event)
     categories = ['instrumentalness', 'liveness','speechiness', 'danceability', 'valence','loudness', 'acousticness','energy']
     for c in categories:
         if c != category:
@@ -117,7 +118,9 @@ def addToRBT(catalog, event, category):
             else:
                 entry_c = me.getValue(valor_c)
             lt.addLast(entry_c,event)
-        
+
+
+
 def newEvent(category):
     event = {
         'list': None
@@ -125,9 +128,21 @@ def newEvent(category):
     event['list'] = lt.newList('ARRAY_LIST',compareIds )
     categories = ['instrumentalness', 'liveness','speechiness', 'danceability', 'valence','loudness', 'acousticness','energy']
     for c in categories:
+        event["tempo"] = om.newMap('RBT',compare)
         if c != category:
             event[c] = om.newMap('RBT',compare)
     return event
+
+
+def addToTempoList(entry,event):
+    in_tempo = om.get(entry["tempo"],float(event["tempo"]))
+    if (in_tempo is None):
+        entry_tempo = lt.newList('ARRAY_LIST')
+        om.put(entry["tempo"],float(event["tempo"]),entry_tempo)
+    else:
+        entry_tempo = me.getValue(in_tempo)
+    lt.addLast(entry_tempo,event)
+
 
 # Funciones de consulta
 
@@ -208,10 +223,26 @@ def requerimiento2(catalog, min_liv , max_liv, min_spe, max_spe):
         lt.addLast(pistas, pista)
     return total_pistas, pistas
 
+# Requerimiento 3
 
-
-
-
+def requerimiento3(catalog, min_valence, max_valence,min_tempo,max_tempo):
+    final_list = lt.newList("ARRAY_LIST")
+    map = catalog["valence"]
+    list = om.values(map,min_valence,max_valence)
+    size = lt.size(list)
+    for i in range(1, size + 1):
+        sub_element = lt.getElement(list,i)
+        sub_map = sub_element['tempo'] 
+        sub_list = om.values(sub_map,min_tempo,max_tempo)
+        size_j = lt.size(sub_list)
+        for j in range(1, size_j +1):
+            element = lt.getElement(sub_list,j)
+            size_k = lt.size(element)
+            for k in range(1, size_k + 1):
+                final_element = lt.getElement(element,k)
+                lt.addLast(final_list, final_element)
+    print(final_list)
+    return final_list
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 def compare(i1, i2):
