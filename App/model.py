@@ -241,8 +241,17 @@ def requerimiento3(catalog, min_valence, max_valence,min_tempo,max_tempo):
             for k in range(1, size_k + 1):
                 final_element = lt.getElement(element,k)
                 lt.addLast(final_list, final_element)
-    print(final_list)
-    return final_list
+    arbol_pistas = dar_pistas(final_list)
+    total_pistas = om.size(arbol_pistas)
+    posiciones = random.sample(range(total_pistas), 8)
+    pistas = lt.newList('ARRAY_LIST')
+    for i in posiciones:
+        key_pista = om.select(arbol_pistas, i)
+        entry3 = om.get(arbol_pistas, key_pista)
+        pista = me.getValue(entry3)
+        lt.addLast(pistas, pista)
+    
+    return pistas, total_pistas 
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 def compare(i1, i2):

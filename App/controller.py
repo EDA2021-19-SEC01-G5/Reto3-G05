@@ -57,4 +57,4 @@ def requerimiento2(catalog, min_liv , max_liv, min_spe, max_spe):
 # Funciones de consulta sobre el catálogo
 
 def requerimiento3(catalog, min_valence, max_valence,min_tempo,max_tempo):
-    model.requerimiento3(catalog, min_valence,max_valence,min_tempo,max_tempo)
+    return model.requerimiento3(catalog, min_valence,max_valence,min_tempo,max_tempo)

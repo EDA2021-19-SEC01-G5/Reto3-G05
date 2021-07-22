@@ -101,7 +101,14 @@ def requerimiento2(catalog, min_liv , max_liv, min_spe, max_spe):
 
 #requerimiento 3
 def requerimiento3(catalog, min_valence,max_valence, min_tempo,max_tempo):
-    controller.requerimiento3(catalog, min_valence,max_valence, min_tempo,max_tempo)
+    pistas, total_pistas = controller.requerimiento3(catalog, min_valence,max_valence, min_tempo,max_tempo)
+    print('El total de pistas encontradas para los rangos especificados es de:', total_pistas)
+    print(8*"*")
+    print("Información de las 8 pistas aleatorias: ")
+    print(8*"*")
+    for i in range(1, lt.size(pistas) + 1):
+        print(8*"*")
+        print('Pista ', i,':\n', lt.getElement(pistas,i), '\n')
 
 catalog = None
 
