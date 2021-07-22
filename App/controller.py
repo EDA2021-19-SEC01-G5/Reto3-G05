@@ -58,3 +58,6 @@ def requerimiento2(catalog, min_liv , max_liv, min_spe, max_spe):
 
 def requerimiento3(catalog, min_valence, max_valence,min_tempo,max_tempo):
     return model.requerimiento3(catalog, min_valence,max_valence,min_tempo,max_tempo)
+
+def requerimiento4(catalog,lista_generos,nuevoGenero,nuevo,min,max):
+    return model.requerimiento4(catalog,lista_generos,nuevoGenero,nuevo,min,max)

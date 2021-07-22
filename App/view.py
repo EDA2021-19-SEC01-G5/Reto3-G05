@@ -110,6 +110,29 @@ def requerimiento3(catalog, min_valence,max_valence, min_tempo,max_tempo):
         print(8*"*")
         print('Pista ', i,':\n', lt.getElement(pistas,i), '\n')
 
+
+def requerimiento4(catalog,lista_generos,nuevoGenero,nuevo,min,max):
+    data, tabla = controller.requerimiento4(catalog,lista_generos,nuevoGenero,nuevo,min,max)
+    print(8*"*") 
+    print(8*"*") 
+    print("Se encontraron un total de:", data["numero_pistas_individual"], "total de eventos de reproducción")
+    for genero in data.keys():
+        if genero.lower().strip() in (lista_generos + nuevo):
+            genero = genero.lower().strip()
+            min = tabla[genero][0]
+            max = tabla[genero][1]
+            lista = data[genero][0]
+            eventos = data[genero][1]
+            artistas = data[genero][2]
+            print(4*"*", genero.upper(),4*"*")
+            print("Para el genero:", genero.title(),"el tempo se encuentra entre",min, "y",max)
+            print("Reproducciones en el genero", genero.title(), ":", eventos, "eventos y", artistas, "artistas")
+            print(4*"*", "Algunos artistas para", genero.title(), 4*"*")
+            for i in range(1,11):
+                elemento = lt.getElement(lista,i)
+                print("Artista", i, elemento["artist_id"])
+
+
 catalog = None
 
 """
@@ -148,6 +171,15 @@ while True:
         min_tempo = float(input('Ingrese el valor minimo del tempo: '))
         max_tempo = float(input('Ingrese el valor maximo del tempo: '))
         requerimiento3(catalog, min_valence,max_valence, min_tempo,max_tempo)
+    elif (int(inputs[0])) == 6:
+        min, max, nuevoGenero, nuevo = 0, 0, False, ""
+        lista_generos = input("Ingrese la lista de generos que desea consultar: \n")
+        nuevoGenero = bool(int(input("¿Desea ingresar un nuevo género (0 para no, 1 para si)?: ")))
+        if nuevoGenero:
+            min = float(input("Ingrese el valor mínimo de BPM del nuevo genero: "))
+            max = float(input("Ingrese el valor maximo de BPM del nuevo genero: "))
+            nuevo = input("Ingrese el nombre del nuevo genero: ")
+        requerimiento4(catalog,lista_generos, nuevoGenero,nuevo,min,max)
     else:
         sys.exit(0)
 sys.exit(0)

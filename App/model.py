@@ -53,20 +53,23 @@ def initCatalog():
         'events': None,
         "loudness":None,
         "acousticness":None,
-        "energy": None
+        "energy": None,
+        'tempo': None
     }
     categories = ['instrumentalness', 'liveness','speechiness', 'danceability', 'valence','loudness', 'acousticness','energy']
     for category in categories:
         catalog[category] = om.newMap(omaptype='RBT',comparefunction = compare )
+    catalog['artists'] = mp.newMap(maptype='PROBING',loadfactor=0.5)
+    catalog['tracks'] = mp.newMap(maptype='PROBING',loadfactor=0.5)
     catalog['events'] = lt.newList('ARRAY_LIST', compareIds)
-    catalog['artists'] = mp.newMap(10000,maptype='PROBING',loadfactor=0.5, comparefunction = compareMap)
-    catalog['tracks'] = mp.newMap(10000,maptype='PROBING',loadfactor=0.5, comparefunction = compareMap)
+    catalog['tempo'] = om.newMap(omaptype='RBT', comparefunction = compare )
 
     return catalog
 # Funciones para agregar informacion al catalogo
 def addEvent(catalog, event):
     categories = ['instrumentalness', 'liveness','speechiness', 'danceability', 'valence','loudness', 'acousticness','energy']
     lt.addLast(catalog['events'], event)
+    addToTempoMap(catalog,event)
     for category in categories:
         addToRBT(catalog, event,category)
     addArtists(catalog, event)
@@ -127,8 +130,8 @@ def newEvent(category):
     }
     event['list'] = lt.newList('ARRAY_LIST',compareIds )
     categories = ['instrumentalness', 'liveness','speechiness', 'danceability', 'valence','loudness', 'acousticness','energy']
+    event["tempo"] = om.newMap('RBT',compare)
     for c in categories:
-        event["tempo"] = om.newMap('RBT',compare)
         if c != category:
             event[c] = om.newMap('RBT',compare)
     return event
@@ -143,7 +146,15 @@ def addToTempoList(entry,event):
         entry_tempo = me.getValue(in_tempo)
     lt.addLast(entry_tempo,event)
 
-
+def addToTempoMap(catalog,event):
+    map = catalog['tempo']
+    entry = om.get(map,float(event['tempo']))
+    if (entry is None):
+        value = lt.newList('ARRAY_LIST')
+        om.put(map, float(event['tempo']), value)
+    else:
+        value = me.getValue(entry)
+    lt.addLast(value,event)
 # Funciones de consulta
 
 
@@ -252,6 +263,52 @@ def requerimiento3(catalog, min_valence, max_valence,min_tempo,max_tempo):
         lt.addLast(pistas, pista)
     
     return pistas, total_pistas 
+
+# Requerimiento 4
+
+def tablaGeneros():
+    tabla = {
+        'reggeae': [60,90],
+        'down-tempo': [70,100],
+        'chill-out': [90,120],
+        'hip-hop':[85,115],
+        'jazz-funk':[120,125],
+        'pop': [100,130],
+        'ryb': [60,80],
+        'rock': [110,140],
+        'metal':[100,160]
+    }
+    return tabla
+
+
+def requerimiento4(catalog: dict,lista_generos: str, nuevoGenero: bool,nuevo: str, min: float,max: float):
+    #Preparar la nueva información
+    data = {}
+    map = catalog['tempo']
+    tabla = tablaGeneros()
+    nuevo = nuevo.strip().lower()
+    generos = lista_generos.split(",")
+    mapa_pistas = om.newMap('RBT',comparefunction= compare) 
+    if nuevoGenero:
+        tabla[nuevo] = [min,max]
+        generos.append(nuevo)
+    # Consolidar la lista con los eventos para cada uno de los generos
+    for genero in generos:
+        genero = genero.strip().lower()
+        data[genero] = lt.newList('ARRAY_LIST')
+        listas = om.values(map,tabla[genero][0],tabla[genero][1])
+        num_listas = lt.size(listas)
+        for i in range(1, num_listas + 1):
+            lista = lt.getElement(listas,i)
+            num_elementos = lt.size(lista)
+            for j in range(1, num_elementos + 1 ):
+                elemento = lt.getElement(lista, j)
+                lt.addLast(data[genero],elemento)
+                om.put(mapa_pistas,elemento['id'],elemento)
+        data[genero] = (data[genero], lt.size(data[genero]),num_artistas(data[genero])) 
+    data['numero_pistas_individual'] = om.size(mapa_pistas)
+    
+    return data, tabla
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 def compare(i1, i2):
